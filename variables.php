@@ -35,5 +35,6 @@ echo "<br>", PI;
 
     
         hf: töltsd le otthon a repot a saját htdocs mappádba
+        git clone
     */
 ?>
