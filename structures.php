@@ -42,13 +42,42 @@ foreach ($fruits as $fruit) {
 
 //hozd létre a user tömböt, ami tartalmazza a user nevét és életkorát
 $users = [
-    "Kiss Pista" => 20,
-    "Nagy Tibi" => 21,
-    "Koós Géza" => 30
+    [
+        "username" => "pista",
+        "password" => "1234",
+        "fullname" => "Kiss Pista"
+    ],
+    [
+        "username" => "tibi",
+        "password" => "abcd",
+        "fullname" => "Nagy Tibi"
+    ],
+    [
+        "username" => "geza",
+        "password" => "pass",
+        "fullname" => "Koós Géza"
+    ]
 ];
 
-foreach ($users as $name => $age) {
-    echo"$name: $age éves. <br>";
+$loginUser = "tibi";
+$loginPass = "abcd";
+
+$loggedIn = false;
+
+foreach ($users as $user) {
+    if ($user["username"] === $loginUser && $user["password"] === $loginPass) {
+        echo "Sikeres bejelentkezés! Üdv, {$user['fullname']}!";
+        $loggedIn = true;
+        break;
+    }
+}
+
+if (!$loggedIn) {
+    echo "Hibás felhasználónév vagy jelszó!";
+}
+
+foreach ($users as $user) {
+    echo "{$user['fullname']} (username: {$user['username']})<br>";
 }
 
 // vegyunk fel egy student tombot ami tombok tömbje
