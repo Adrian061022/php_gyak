@@ -16,6 +16,22 @@
     }
     if(file_put_contents($dataFile, $newContent) != false) {
         $message = "sikeresen módosult a $dataFile fájl";
+        $currentContent = $newContent;
+
+
+        //Naplózás
+
+        $currentTime = date('Y-M-D H:i:s');
+        $logEntry = "[{$currentTime}] Módosítás: A(z) '{$dataFile}' fájl tartalma módosítva.";
+
+        if (file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX) == false)
+        {
+            throw new Exception("Nem sikerült naplózni.");
+        }
+
+    }
+    else {
+        throw new Exception("A $dataFile írása sikertelen!");
     }
 }catch(Exception $ex)
     {
@@ -45,10 +61,7 @@
 
    <h2>Módosítás</h2>
    <form action="" method="post">
-    <label for="new_content">Új tartalom</label>
-    <textarea name="new_content" id="new_content">
-        <?=htmlspecialchars($currentContent)?>
-    </textarea>
+    <label for="new_content">Új tartalom</label><textarea name="new_content" id="new_content"><?=htmlspecialchars($currentContent)?></textarea>
     <button type="submit">Mentés</button>
    </form>
 </html>
