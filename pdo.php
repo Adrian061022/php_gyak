@@ -26,14 +26,51 @@ CREATE table cards (
 
 */
 //Data Source Name
-$dsn = 'mysql:host=localhost;dbname=businesscards;charset=utf8mb';
+$dsn = 'mysql:host=localhost;dbname=businesscards;charset=utf8mb4';
 $user = 'root';
 $pass = '';
 try {
-$pdo = new PDO($dsn, $user, $pass);   
-}catch(PDOException $e) {
-    echo "Kapcsolódási hiba: " . $e->getMessage();
+    $pdo = new PDO($dsn, $user, $pass);  
+    
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    echo"Sikeres csatlakozás az adatbázishoz!<br>";
+
+    $name = "Tóth Tibi";
+    $companyName = "MZSRK Kft.";
+    $phone = "+36301234567";
+    $email = "asd@gmail.com";
+    $photo = null;
+    // $status = "active";
+    $note = "Ez egy megjegyzés";
+
+    // $sql = "INSERT INTO cards (`name`, `companyName`, `phone`, `email`, `photo`, `note`) VALUES
+    // ('$name', '$companyName', '$phone', '$email', '$photo','$note')";
+
+    //$pdo->exec($sql);
+
+    $sql = "INSERT INTO cards (`name`, `companyName`, `phone`, `email`, `photo`, `note`) VALUES
+    (?, ?, ?, ?, ?, ?)";
+
+    $stat = $pdo->prepare($sql);
+    $stat->execute([$name, $companyName, $phone, $email, $photo,$note]);    
+
+
+
+    // $sql = "SELECT * FROM cards where id=11";
+    // $result = $pdo->query($sql);
+
+    // $card = $result->fetch(PDO::FETCH_ASSOC);
+    // echo "<br>";
+    // print_r($card);
+
    
 
+}catch(PDOException $e) {
+    echo "Kapcsolódási hiba: " . $e->getMessage();
+   exit();
+
 }
+
+
 ?>
