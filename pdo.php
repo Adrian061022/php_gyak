@@ -34,43 +34,113 @@ try {
     
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    echo"Sikeres csatlakozás az adatbázishoz!<br>";
-
-    $name = "Tóth Tibi";
-    $companyName = "MZSRK Kft.";
-    $phone = "+36301234567";
-    $email = "asd@gmail.com";
-    $photo = null;
-    // $status = "active";
-    $note = "Ez egy megjegyzés";
-
-    // $sql = "INSERT INTO cards (`name`, `companyName`, `phone`, `email`, `photo`, `note`) VALUES
-    // ('$name', '$companyName', '$phone', '$email', '$photo','$note')";
-
-    //$pdo->exec($sql);
-
-    $sql = "INSERT INTO cards (`name`, `companyName`, `phone`, `email`, `photo`, `note`) VALUES
-    (?, ?, ?, ?, ?, ?)";
-
-    $stat = $pdo->prepare($sql);
-    $stat->execute([$name, $companyName, $phone, $email, $photo,$note]);    
-
-
-
-    // $sql = "SELECT * FROM cards where id=11";
-    // $result = $pdo->query($sql);
-
-    // $card = $result->fetch(PDO::FETCH_ASSOC);
-    // echo "<br>";
-    // print_r($card);
-
-   
+    
+    //xss($pdo);
+    //sql_injection($pdo);
+    //prepared_statement($pdo);
+    checked_insert($pdo);
 
 }catch(PDOException $e) {
     echo "Kapcsolódási hiba: " . $e->getMessage();
    exit();
 
 }
+function xss($pdo)
+{
+    echo"Sikeres csatlakozás az adatbázishoz!<br>";
 
+    $name = "Tóth Tibi";
+    $companyName =htmlspecialchars("<script>alert(\"hacked\")</script>");
+    $phone = "+36301234567";
+    $email = "asd@gmail.com";
+    $photo = null;
+    // $status = "active";
+    $note = "Ez egy megjegyzés";
+
+    $sql = "INSERT INTO cards (`name`, `companyName`, `phone`, `email`, `photo`, `note`) VALUES
+    ('$name', '$companyName', '$phone', '$email', '$photo','$note')";
+
+    $pdo->exec($sql);
+
+   
+
+    $sql = "SELECT * FROM cards where name = 'Tóth Tibi'";
+    $result = $pdo->query($sql);
+    $card = $result->fetch(PDO::FETCH_ASSOC);
+    echo "<br>";
+    print_r($card);
+
+   
+}
+function sql_injection($pdo)
+{
+    // echo"Sikeres csatlakozás az adatbázishoz!<br>";
+
+    // $name = "'OR '1' = '1";
+    // $companyName = "MZSRK Kft.";
+    // $phone = "+36301234567";
+    // $email = "asd@gmail.com";
+    // $photo = null;
+    // // $status = "active";
+    // $note = "Ez egy megjegyzés";
+
+    // $sql = "INSERT INTO cards (`name`, `companyName`, `phone`, `email`, `photo`, `note`) VALUES
+    // ('$name', '$companyName', '$phone', '$email', '$photo','$note')";
+
+    // //$pdo->exec($sql);
+
+    // $sql = "INSERT INTO cards (`name`, `companyName`, `phone`, `email`, `photo`, `note`) VALUES
+    // (?, ?, ?, ?, ?, ?)";
+
+    // $stmt = $pdo->prepare($sql);
+    // $stmt->execute([$name, $companyName, $phone, $email, $photo,$note]);    
+
+
+
+    $name_i = "'OR '1' = '1";
+    $sql = "SELECT * FROM cards where name ='$name_i'";
+    $result = $pdo->query($sql);
+
+    $card = $result->fetchAll(PDO::FETCH_ASSOC);
+    echo "<br>";
+    print_r($card);
+
+   
+}
+function prepared_statement($pdo)
+{
+    $name_i = "'OR '1' = '1";
+    $sql = "SELECT * FROM cards where name =?";
+    $stmt = $pdo -> prepare($sql);
+    $stmt -> execute([$name_i]);
+    $card = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo "<br>";
+    print_r($card);
+
+    // $sql = "INSERT INTO cards (`name`, `companyName`, `phone`, `email`, `photo`, `note`) VALUES
+    // (?, ?, ?, ?, ?, ?)";
+
+    // $stmt = $pdo->prepare($sql);
+    // $stmt->execute([$name, $companyName, $phone, $email, $photo,$note]);    
+}
+
+function checked_insert($pdo)
+{
+    $name ="asd";
+    $companyName =htmlspecialchars("MZSRK Kft.");
+    $phone =htmlspecialchars("+36301234567");
+    $email =htmlspecialchars("asd@gmail.com");
+    $photo =htmlspecialchars(null);
+    //$status = "active";
+    $note = htmlspecialchars("Ez egy megjegyzés");
+   
+    $sql = "INSERT INTO cards (`name`, `companyName`, `phone`, `email`, `photo`, `note`) VALUES
+    (?, ?, ?, ?, ?, ?)";
+    
+  
+    $stmt = $pdo -> prepare($sql);
+    $stmt->execute([$name, $companyName, $phone, $email, $photo,$note]);
+    
+}
 
 ?>
