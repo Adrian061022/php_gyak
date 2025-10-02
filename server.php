@@ -74,6 +74,22 @@
         setcookie('counter', $counter, time() + 86400);
         echo "<p>Az oldal megnyitásainak száma: <strong>$counter</strong></p>";
         ?>
+
+       <?php
+        
+        session_start();
+
+        $pageload = 0;
+
+        if (isset($_SEESION['pageload'])) { 
+            $counter = $_COOKIE['counter'] + 1;
+        } else {
+            $counter = 1;
+        }
+        setcookie('counter', $counter, time() + 86400);
+        echo "<p>Az oldal megnyitásainak száma: <strong>$counter</strong></p>";
+        ?>
+
     
 </body>
 </html>
